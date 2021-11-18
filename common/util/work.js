@@ -67,6 +67,12 @@ export const us = {
 	  description:"查看部门，组员",
 	  useCount:10000,
 	  page:'levelAddressBook'
+    },{
+	  title:"采购",
+	  icon:icon_prefix+"hetong.png",
+	  description:"采购明细",
+	  useCount:10000,
+	  page:'purchase'
     }
   ]
 }

@@ -68,6 +68,7 @@
 		},
 		data() {
 			return {
+			 isLocalConfig:true,
 			 swiperList: [
 				  {id:1,type: 'image',url: '/static/banner/banner1.png', link: ''},
 				  {id:2,type: 'image',url: '/static/banner/banner2.jpg', link: ''},

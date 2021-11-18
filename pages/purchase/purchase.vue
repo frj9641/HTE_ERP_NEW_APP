@@ -2,7 +2,7 @@
 	<view>
 		<scroll-view :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''">
 			<cu-custom bgColor="bg-gradual-pink" :isBack="true">
-				<block slot="content">helloWorld</block>
+				<block slot="content">purchase</block>
 			</cu-custom>
 
 			<view class="padding flex flex-direction">
@@ -10,14 +10,20 @@
 			</view>
 
 			<view class="padding flex flex-direction">
-				<my-date label="开始时间：" v-model="beginTime" placeholder="请选择开始时间" required fields="minute"></my-date>
+				<uni-collapse>
+					<uni-collapse-item title="默认开启" :open="true">
+						<text>折叠内容</text>
+					</uni-collapse-item>
+				</uni-collapse>
 			</view>
 
+			<view class="padding flex flex-direction">
+				<my-date label="开始时间：" v-model="beginTime" placeholder="请选择开始时间" required fields="minute"></my-date>
+			</view>
 
 			<view class="padding flex flex-direction">
 				<uni-calendar :showMonth="true" :selected="selected" />
 			</view>
-
 
 			<view class="padding flex flex-direction">
 				<my-image-upload />

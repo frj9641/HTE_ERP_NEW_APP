@@ -158,6 +158,9 @@
 		},{
 			"path": "pages/common/helloWorld",
 			"style": {}
+		},{
+			"path": "pages/purchase/purchase",
+			"style": {}
 		}
 		
 	],

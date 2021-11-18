@@ -120,5 +120,12 @@ const routes = [
 	        title: 'helloWorld',
 	    },
 	},
+	{
+	    path: '/pages/purchase/purchase',
+	    name: 'purchase',
+	    meta: {
+	        title: 'purchase',
+	    },
+	}
 ]
 export default routes
