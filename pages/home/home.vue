@@ -93,6 +93,8 @@
 			    this.onSocketOpen()
 			    this.onSocketReceive()
 			    this.loadCount(0);
+				//获取权限
+				
 			},
 			goPage(page){
 				if(!page){

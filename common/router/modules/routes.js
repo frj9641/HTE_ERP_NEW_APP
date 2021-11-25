@@ -120,12 +120,55 @@ const routes = [
 	        title: 'helloWorld',
 	    },
 	},
+	//开始开发
 	{
 	    path: '/pages/purchase/purchase',
 	    name: 'purchase',
 	    meta: {
 	        title: 'purchase',
 	    },
+	},
+	{
+	    path: '/pages/rk/rk',
+	    name: 'rk',
+	    meta: {
+	        title: 'rk',
+	    },
+	},
+	{
+	    path: '/pages/ck/ck',
+	    name: 'ck',
+	    meta: {
+	        title: 'ck',
+	    },
+	},
+	{
+	    path: '/pages/product/product',
+	    name: 'product',
+	    meta: {
+	        title: 'product',
+	    },
+	},
+	{
+	    path: '/pages/rkData/rkData',
+	    name: 'rkData',
+	    meta: {
+	        title: 'rkData',
+	    },
+	},
+	{
+	    path: '/pages/productData/productData',
+	    name: 'productData',
+	    meta: {
+	        title: 'productData',
+	    },
+	},
+	{
+	    path: '/pages/dataCollect/dataCollect',
+	    name: 'dataCollect',
+	    meta: {
+	        title: 'dataCollect',
+	    }
 	}
 ]
 export default routes

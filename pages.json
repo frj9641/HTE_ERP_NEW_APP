@@ -158,11 +158,30 @@
 		},{
 			"path": "pages/common/helloWorld",
 			"style": {}
-		},{
+		},
+		// 开始开发
+		{
 			"path": "pages/purchase/purchase",
 			"style": {}
+		},{
+			"path": "pages/rk/rk",
+			"style": {}
+		},{
+			"path": "pages/ck/ck",
+			"style": {}
+		},{
+			"path": "pages/product/product",
+			"style": {}
+		},{
+			"path": "pages/rkData/rkData",
+			"style": {}
+		},{
+			"path": "pages/productData/productData",
+			"style": {}
+		},{
+			"path": "pages/dataCollect/dataCollect",
+			"style": {}
 		}
-		
 	],
 	"globalStyle": {
 		"mp-alipay": {
