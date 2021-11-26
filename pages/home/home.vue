@@ -92,9 +92,15 @@
 				console.log("-----------home------------")
 			    this.onSocketOpen()
 			    this.onSocketReceive()
-			    this.loadCount(0);
+			    this.loadCount(0)
 				//获取权限
-				
+				this.loadPermissionList()
+			},
+			loadPermissionList(){
+				// 权限设置完成后开发
+				this.$http.get('/mobile/getPermissionList').then(res=>{
+					console.log(res.data.result.id)
+				})
 			},
 			goPage(page){
 				if(!page){
