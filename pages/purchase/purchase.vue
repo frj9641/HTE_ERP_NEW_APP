@@ -1,8 +1,12 @@
 <template>
 	<view>
-		<scroll-view :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''">
-			<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+		<scroll-view style="position: absolute; z-index: 0;" :scroll-y="modalName==null" class="page"
+			:class="modalName!=null?'show':''">
+			<cu-custom id="nav-bar" bgColor="bg-gradual-green" :isBack="true">
 				<block slot="content">采购业务</block>
+				<block slot="right">
+					<image class="image-add" src="./add.svg" @tap="add()"></image>
+				</block>
 			</cu-custom>
 
 			<!-- <view class="padding flex flex-direction">
@@ -20,12 +24,12 @@
 			<view class="padding flex flex-direction">
 				<my-image-upload />
 			</view> -->
-			<image class="image-add" src="./add.svg" @tap="add()"></image>
+
 			<view v-for="(item,index) in list" style="margin: 15rpx;">
 				<uni-collapse>
 					<uni-collapse-item
 						:thumb="item.checkFlag==2?'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/460d46d0-4fcc-11eb-8ff1-d5dcf8779628.png':''"
-						:title="item.djh" :open="index==0?true:false">
+						:title="item.djhDesc" :open="index==0?true:false">
 						<view class="collapse-item">
 							<view>单据号：{{item.djh}}</view>
 							<view>厂站：{{item.siteId_dictText}}</view>
@@ -46,7 +50,22 @@
 					</uni-collapse-item>
 				</uni-collapse>
 			</view>
+
 		</scroll-view>
+
+		<view style="position: absolute; z-index: 1;">
+			<uni-drawer ref="showRight" mode="left" :mask-click="true">
+				<scroll-view style="height: 100%;" scroll-y="true">
+					<view class="content">
+						<form @submit="onSubmit">
+							<comp-input/>
+							<button form-type="submit" class="submit-button">提交</button>
+						</form>
+					</view>
+				</scroll-view>
+			</uni-drawer>
+		</view>
+
 	</view>
 </template>
 
@@ -64,13 +83,14 @@
 	import appSelect from '@/components/my-componets/appSelect.vue'
 	import myImageUpload from '@/components/my-componets/my-image-upload.vue'
 	import myDate from '@/components/my-componets/my-date.vue'
-
+	import compInput from './comInput.vue'
 
 	export default {
 		components: {
 			appSelect,
 			myImageUpload,
-			myDate
+			myDate,
+			compInput
 		},
 		created() {
 			//
@@ -90,8 +110,14 @@
 			}
 		},
 		methods: {
-			add(){
-				alert('haha')
+			onSubmit(e) {
+				console.log(e)
+			},
+			showDrawer() {
+				this.$refs.showRight.open();
+			},
+			add() {
+				this.showDrawer()
 			},
 			loadData() {
 				this.$http.get('/purchase/hteKcMaterialPurchase/list').then(res => {
@@ -111,12 +137,12 @@
 	}
 
 	.image-add {
-		position: fixed;
-		right: 0;
-		bottom: 0;
-		margin-bottom: 20rpx;
-		margin-right: 20rpx;
-		width: 100rpx;
-		height: 100rpx;
+		width: 80rpx;
+		height: 80rpx;
+	}
+	
+	.submit-button{
+		background-color: #4CD964;
+		color: #FFFFFF;
 	}
 </style>
