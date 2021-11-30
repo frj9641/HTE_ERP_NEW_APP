@@ -99,7 +99,8 @@
 			loadPermissionList(){
 				// 权限设置完成后开发
 				this.$http.get('/mobile/getPermissionList').then(res=>{
-					console.log(res.data.result.id)
+					getApp().globalData.userPermission=res.data.result
+					console.log('全局个人权限信息变量userPerssion赋值==>',getApp().globalData.userPermission)
 				})
 			},
 			goPage(page){

@@ -2,38 +2,38 @@
 	<view>
 		<text class="flex flex-direction form-title">新增表单</text>
 		<view class="input-title">厂站</view>
-		<input name="site" type="text" />
+		<input class="input-content" name="site" type="text" />
 
 		<view class="input-title">物料</view>
 		<picker mode="selector" @change="bindMaterialChange" :range="materials" :range-key="'material'">
-			<input name="material" v-model="selectedMaterial" />
+			<input class="input-content" name="material" v-model="selectedMaterial" />
 		</picker>
 
 		<view class="input-title">供应商</view>
 		<picker mode="selector" @change="bindSupplyChange" :range="supplys" :range-key="'supplyName'">
-			<input name="supply" v-model="selectedSupply" />
+			<input class="input-content" name="supply" v-model="selectedSupply" />
 		</picker>
 
 		<view class="input-title">数量(吨)</view>
-		<input name="slT" type="digit" />
+		<input class="input-content" name="slT" type="digit" />
 
-		<view class="input-title">采购单价</view>
-		<input name="dj" type="digit" />
+		<view class="input-title">采购单价(元/吨)</view>
+		<input class="input-content" name="dj" type="digit" />
 
-		<view class="input-title">运费单价</view>
-		<input name="yfdj" type="digit" />
+		<view class="input-title">运费单价(元/吨)</view>
+		<input class="input-content" name="yfdj" type="digit" />
 
 		<view class="input-title">备注</view>
-		<input name="mark" type="text" />
+		<input class="input-content" name="mark" type="text" />
 
 		<view class="input-title">采购方式</view>
 		<picker mode="selector" @change="bindCgWayChange" :range="cgWays" :range-key="'title'">
-			<input name="cgWay" v-model="selectedCgWay" />
+			<input class="input-content" name="cgWay" v-model="selectedCgWay" />
 		</picker>
 
 		<view class="input-title">采购日期</view>
 		<picker mode="date" @change="bindCgDateChange">
-			<input name="cgDate" v-model="selectedCgDate" />
+			<input class="input-content" name="cgDate" v-model="selectedCgDate" />
 		</picker>
 	</view>
 </template>
@@ -59,9 +59,6 @@
 		},
 		methods: {
 			loadData() {
-				// this.$http.get('/sys/sysDepart/queryTreeList').then(res => {
-				// 	this.sites = res.data.result
-				// })
 
 				this.$http.get('/material/hteKcMaterial/rootList').then(res => {
 					this.materials = res.data.result.records
@@ -102,6 +99,7 @@
 
 <style>
 	.form-title {
+		background-color: #CCE6FF;
 		font-size: 50rpx;
 		text-align: center;
 		padding: 20rpx;
@@ -112,5 +110,9 @@
 		font-size: 40rpx;
 		background-color: #F1F1F1;
 		padding: 15rpx;
+	}
+	
+	.input-content{
+		margin: 15rpx;
 	}
 </style>
