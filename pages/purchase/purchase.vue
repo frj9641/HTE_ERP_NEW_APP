@@ -58,7 +58,8 @@
 				<scroll-view style="height: 100%;" scroll-y="true">
 					<view class="content">
 						<form @submit="onSubmit">
-							<comp-input/>
+							<comp-input @bindMaterialChange="bindMaterialChange" @bindSupplyChange="bindSupplyChange"
+								@bindCgWayChange="bindCgWayChange" />
 							<button form-type="submit" class="submit-button">提交</button>
 						</form>
 					</view>
@@ -99,7 +100,10 @@
 		data() {
 			return {
 				modalName: null,
-				list: []
+				list: [],
+				selectedMaterialId: '',
+				selectedSupplyId: '',
+				selectedCgWayId: ''
 				// item: {
 				// 	msg: '退出成功'
 				// },
@@ -120,10 +124,19 @@
 				this.showDrawer()
 			},
 			loadData() {
-				this.$http.get('/purchase/hteKcMaterialPurchase/list').then(res => {
+				this.$http.get('/purchase/hteKcMaterialPurchase/list?pageSize=50').then(res => {
 					this.list = res.data.result.records
 					console.log(this.list)
 				})
+			},
+			bindMaterialChange(e) {
+				this.selectedMaterialId = e
+			},
+			bindSupplyChange(e) {
+				this.selectedSupplyId = e
+			},
+			bindCgWayChange(e) {
+				this.selectedCgWayId = e
 			}
 		}
 	}
@@ -140,8 +153,8 @@
 		width: 80rpx;
 		height: 80rpx;
 	}
-	
-	.submit-button{
+
+	.submit-button {
 		background-color: #4CD964;
 		color: #FFFFFF;
 	}
