@@ -55,7 +55,6 @@
 </template>
 
 <script>
-
 	import appSelect from '@/components/my-componets/appSelect.vue'
 	import myImageUpload from '@/components/my-componets/my-image-upload.vue'
 	import myDate from '@/components/my-componets/my-date.vue'
@@ -84,7 +83,30 @@
 		},
 		methods: {
 			onSubmit(e) {
-				console.log(e)
+				let that = this
+				let form = e.detail.value
+				let params = {}
+
+				params.siteId = 1 //权限未做暂时写死
+				params.materialId = this.selectedMaterialId
+				params.supplyId = this.selectedSupplyId
+				params.slT = form.slT
+				params.dj = form.dj
+				params.yfdj = form.yfdj
+				params.zje = (parseFloat(form.dj) + parseFloat(form.yfdj)) * parseFloat(form.slT)
+				params.creater = getApp().globalData.userPermission.userId
+				params.remark = form.mark
+				params.checkFlag = 1 //未审核
+				params.rkFlag = 0 //未入库
+				params.purchaseWay = this.selectedCgWayId
+				params.djhDesc = 'test' //测试
+				params.cgDate = form.cgDate
+				this.$http.get('/purchase/hteKcMaterialPurchase/getCgNo?id=' + 1).then(res => {
+					params.djh = res.data.message
+					that.$http.post("/purchase/hteKcMaterialPurchase/add", params).then(res => {
+						console.log(res)
+					})
+				})
 			},
 			showDrawer() {
 				this.$refs.showRight.open();
