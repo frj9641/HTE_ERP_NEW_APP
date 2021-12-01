@@ -2,7 +2,9 @@
 	<view>
 		<text class="flex flex-direction form-title">新增表单</text>
 		<view class="input-title">厂站</view>
-		<input class="input-content" name="site" type="text" />
+		<picker mode="selector" @change="bindSiteChange" :range="sites" :range-key="'siteName'">
+			<input class="input-content" name="site" v-model="selectedSite" />
+		</picker>
 
 		<view class="input-title">物料</view>
 		<picker mode="selector" @change="bindMaterialChange" :range="materials" :range-key="'material'">
@@ -47,18 +49,20 @@
 		},
 		data() {
 			return {
-				// sites: []
+				sites: [],
 				materials: [],
 				supplys: [],
 				cgWays: [],
 				selectedMaterial: "",
 				selectedSupply: "",
 				selectedCgWay: "",
-				selectedCgDate: ""
+				selectedCgDate: "",
+				selectedSite: ""
 			}
 		},
 		methods: {
 			loadData() {
+				this.sites = getApp().globalData.userPermission.depart2work
 
 				this.$http.get('/material/hteKcMaterial/rootList').then(res => {
 					this.materials = res.data.result.records
@@ -92,6 +96,11 @@
 			},
 			bindCgDateChange(e) {
 				this.selectedCgDate = e.detail.value
+			},
+			bindSiteChange(e) {
+				let obj = this.sites[e.detail.value];
+				this.selectedSite = obj.siteName
+				this.$emit('bindSiteChange', obj.siteCode)
 			}
 		}
 	}
@@ -111,8 +120,8 @@
 		background-color: #F1F1F1;
 		padding: 15rpx;
 	}
-	
-	.input-content{
+
+	.input-content {
 		margin: 15rpx;
 	}
 </style>

@@ -285,7 +285,7 @@
 				align-items: center;
 				height: 48px;
 				line-height: 48px;
-				background-color: #fff;
+				// background-color: #fff;
 				color: #303133;
 				font-size: 13px;
 				font-weight: 500;

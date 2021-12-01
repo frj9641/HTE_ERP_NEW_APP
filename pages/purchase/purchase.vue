@@ -10,10 +10,8 @@
 			</cu-custom>
 
 			<view v-for="(item,index) in list" style="margin: 15rpx;">
-				<uni-collapse>
-					<uni-collapse-item
-						:thumb="item.checkFlag==2?'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/460d46d0-4fcc-11eb-8ff1-d5dcf8779628.png':''"
-						:title="item.djhDesc" :open="index==0?true:false">
+				<uni-collapse :style="{'background-color':item.checkFlag==1?'#FFA500':'#fff'}">
+					<uni-collapse-item :showArrow="false" :title="item.djhDesc" :open="index==0?true:false">
 						<view class="collapse-item">
 							<view>单据号：{{item.djh}}</view>
 							<view>厂站：{{item.siteId_dictText}}</view>
@@ -30,6 +28,8 @@
 							<view>审核状态：{{item.checkFlag_dictText}}</view>
 							<view>审核日期：{{item.checkDate}}</view>
 							<view>入库状态：{{item.rkFlag_dictText}}</view>
+							<button style="position: absolute; right: 0; bottom: 0;" v-if="item.checkFlag==1"
+								size="mini" type="primary" @click="updateCheck(item.id)">审核通过</button>
 						</view>
 					</uni-collapse-item>
 				</uni-collapse>
@@ -43,7 +43,7 @@
 					<view class="content">
 						<form @submit="onSubmit">
 							<comp-input @bindMaterialChange="bindMaterialChange" @bindSupplyChange="bindSupplyChange"
-								@bindCgWayChange="bindCgWayChange" />
+								@bindCgWayChange="bindCgWayChange" @bindSiteChange="bindSiteChange" />
 							<button form-type="submit" class="submit-button">提交</button>
 						</form>
 					</view>
@@ -77,7 +77,8 @@
 				list: [],
 				selectedMaterialId: '',
 				selectedSupplyId: '',
-				selectedCgWayId: ''
+				selectedCgWayId: '',
+				selectedSiteId: ''
 
 			}
 		},
@@ -86,8 +87,7 @@
 				let that = this
 				let form = e.detail.value
 				let params = {}
-
-				params.siteId = 1 //权限未做暂时写死
+				params.siteId = this.selectedSiteId
 				params.materialId = this.selectedMaterialId
 				params.supplyId = this.selectedSupplyId
 				params.slT = form.slT
@@ -99,7 +99,7 @@
 				params.checkFlag = 1 //未审核
 				params.rkFlag = 0 //未入库
 				params.purchaseWay = this.selectedCgWayId
-				params.djhDesc = 'test' //测试
+				params.djhDesc = form.site + "-" + form.material + "-" + form.cgWay + "-" + form.cgDate //测试
 				params.cgDate = form.cgDate
 				this.$http.get('/purchase/hteKcMaterialPurchase/getCgNo?id=' + 1).then(res => {
 					params.djh = res.data.message
@@ -107,6 +107,8 @@
 						console.log(res)
 					})
 				})
+				this.$refs.showRight.close();
+				this.loadData()
 			},
 			showDrawer() {
 				this.$refs.showRight.open();
@@ -115,10 +117,11 @@
 				this.showDrawer()
 			},
 			loadData() {
-				this.$http.get('/purchase/hteKcMaterialPurchase/list?pageSize=50').then(res => {
-					this.list = res.data.result.records
-					console.log(this.list)
-				})
+				this.$http.get('/purchase/hteKcMaterialPurchase/list?pageSize=50&creater=e9ca23d68d884d4ebb19d07889727dae')
+					.then(res => {
+						this.list = res.data.result.records
+						console.log(this.list)
+					})
 			},
 			bindMaterialChange(e) {
 				this.selectedMaterialId = e
@@ -128,7 +131,34 @@
 			},
 			bindCgWayChange(e) {
 				this.selectedCgWayId = e
-			}
+			},
+			bindSiteChange(e) {
+				this.selectedSiteId = e
+			},
+			updateCheck(e) {
+				let params = {}
+				params.id = e
+				params.checkFlag = 2
+				params.checkDate = this.dateFormat(new Date())
+				this.$http.put('/purchase/hteKcMaterialPurchase/edit', params)
+					.then(res => {
+						console.log(res)
+					})
+				this.loadData()
+			},
+			dateFormat(time) {
+				let date = new Date(time);
+				let year = date.getFullYear();
+				// 在日期格式中，月份是从0开始的，因此要加0，使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+				let month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+				let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+				let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				// 拼接
+				// return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+				return year + "-" + month + "-" + day;
+			},
 		}
 	}
 </script>
