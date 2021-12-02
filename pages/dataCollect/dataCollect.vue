@@ -1,78 +1,183 @@
 <template>
 	<view>
-		<scroll-view :scroll-y="modalName==null" class="page" :class="modalName!=null?'show':''">
-			<cu-custom bgColor="bg-gradual-pink" :isBack="true">
-				<block slot="content">purchase</block>
+		<scroll-view style="position: absolute; z-index: 0;" :scroll-y="modalName==null" class="page"
+			:class="modalName!=null?'show':''">
+			<cu-custom id="nav-bar" bgColor="bg-gradual-green" :isBack="true">
+				<block slot="content">质量数据采集</block>
+				<block slot="right">
+					<image class="image-add" src="./add.svg" @tap="add()"></image>
+				</block>
 			</cu-custom>
 
-			<view class="padding flex flex-direction">
-				<app-select label=" 类    型：" v-model="type" placeholder="请选择类型" :dict="plan_type" space></app-select>
-			</view>
-
-			<view class="padding flex flex-direction">
-				<uni-collapse>
-					<uni-collapse-item title="默认开启" :open="true">
-						<text>折叠内容</text>
+			<view v-for="(item,index) in list" style="margin: 15rpx;">
+				<uni-collapse :style="{'background-color':item.checkFlag==1?'#FFA500':'#fff'}" @change="test(item)">
+					<uni-collapse-item :showArrow="false"
+						:title="item.siteId_dictText+'-'+item.collectDate+'-'+item.collectTime">
+						<view class="collapse-item" @click="edit(item.id)">
+							<view>厂站：{{item.siteId_dictText}}</view>
+							<view>采样时间：{{item.collectTime}}</view>
+							<view>采样日期：{{item.collectDate}}</view>
+							<view>审核状态：{{item.checkFlag_dictText}}</view>
+							<view>审核日期：{{item.checkDate}}</view>
+							<button style="position: absolute; right: 0; bottom: 0;" v-if="item.checkFlag==1"
+								size="mini" type="primary" @click="updateCheck(item.id)">审核通过</button>
+						</view>
 					</uni-collapse-item>
 				</uni-collapse>
 			</view>
 
-			<view class="padding flex flex-direction">
-				<my-date label="开始时间：" v-model="beginTime" placeholder="请选择开始时间" required fields="minute"></my-date>
-			</view>
-
-			<view class="padding flex flex-direction">
-				<uni-calendar :showMonth="true" :selected="selected" />
-			</view>
-
-			<view class="padding flex flex-direction">
-				<my-image-upload />
-			</view>
-
 		</scroll-view>
-	</view>
 
+		<view style="position: absolute; z-index: 1;">
+			<uni-drawer ref="showRight" mode="left" :mask-click="true">
+				<scroll-view style="height: 100%;" scroll-y="true">
+					<view class="content">
+						<form @submit="onSubmit">
+							<comp-input @bindMaterialChange="bindMaterialChange" @bindSupplyChange="bindSupplyChange"
+								@bindCgWayChange="bindCgWayChange" @bindSiteChange="bindSiteChange" />
+							<button form-type="submit" class="submit-button">提交</button>
+						</form>
+					</view>
+				</scroll-view>
+			</uni-drawer>
+		</view>
+
+	</view>
 </template>
 
 <script>
-	const plan_type = [{
-		text: '日常记录',
-		value: '1'
-	}, {
-		text: '本周工作',
-		value: '2'
-	}, {
-		text: '下周计划',
-		value: '3'
-	}];
 	import appSelect from '@/components/my-componets/appSelect.vue'
 	import myImageUpload from '@/components/my-componets/my-image-upload.vue'
 	import myDate from '@/components/my-componets/my-date.vue'
-
+	import compInput from './comInput.vue'
 
 	export default {
 		components: {
 			appSelect,
 			myImageUpload,
-			myDate
+			myDate,
+			compInput
+		},
+		created() {
+			//
+			this.loadData()
 		},
 		data() {
 			return {
 				modalName: null,
-				item: {
-					msg: '退出成功'
-				},
-				plan_type,
-				type: "1",
-				selected: [],
-				beginTime: ''
+				list: [],
+				selectedMaterialId: '',
+				selectedSupplyId: '',
+				selectedCgWayId: '',
+				selectedSiteId: ''
+
 			}
 		},
 		methods: {
-
+			test(e) {
+				let id = e.id
+				this.$http.get('/dataCollect/htePortDataCollect/queryHtePortDataCollectDetailByMainId?id='+id)
+					.then(res => {
+						console.log('test',res.data.result)
+					})
+			},
+			onSubmit(e) {
+				let that = this
+				let form = e.detail.value
+				let params = {}
+				params.siteId = this.selectedSiteId
+				params.materialId = this.selectedMaterialId
+				params.supplyId = this.selectedSupplyId
+				params.slT = form.slT
+				params.dj = form.dj
+				params.yfdj = form.yfdj
+				params.zje = (parseFloat(form.dj) + parseFloat(form.yfdj)) * parseFloat(form.slT)
+				params.creater = getApp().globalData.userPermission.userId
+				params.remark = form.mark
+				params.checkFlag = 1 //未审核
+				params.rkFlag = 0 //未入库
+				params.purchaseWay = this.selectedCgWayId
+				params.djhDesc = form.site + "-" + form.material + "-" + form.cgWay + "-" + form.cgDate //测试
+				params.cgDate = form.cgDate
+				this.$http.get('/purchase/hteKcMaterialPurchase/getCgNo?id=' + this.selectedSiteId).then(res => {
+					params.djh = res.data.message
+					that.$http.post("/purchase/hteKcMaterialPurchase/add", params).then(res => {
+						console.log(res)
+					})
+				})
+				this.$refs.showRight.close();
+				this.loadData()
+			},
+			showDrawer() {
+				this.$refs.showRight.open();
+			},
+			add() {
+				this.showDrawer()
+			},
+			edit(e){
+				alert(e)
+			},
+			loadData() {
+				this.$http.get('/dataCollect/htePortDataCollect/list')
+					.then(res => {
+						this.list = res.data.result.records
+						console.log(this.list)
+					})
+			},
+			bindMaterialChange(e) {
+				this.selectedMaterialId = e
+			},
+			bindSupplyChange(e) {
+				this.selectedSupplyId = e
+			},
+			bindCgWayChange(e) {
+				this.selectedCgWayId = e
+			},
+			bindSiteChange(e) {
+				this.selectedSiteId = e
+			},
+			updateCheck(e) {
+				let params = {}
+				params.id = e
+				params.checkFlag = 2
+				params.checkDate = this.dateFormat(new Date())
+				this.$http.put('/purchase/hteKcMaterialPurchase/edit', params)
+					.then(res => {
+						console.log(res)
+					})
+				this.loadData()
+			},
+			dateFormat(time) {
+				let date = new Date(time);
+				let year = date.getFullYear();
+				// 在日期格式中，月份是从0开始的，因此要加0，使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+				let month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+				let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+				let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				// 拼接
+				// return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+				return year + "-" + month + "-" + day;
+			},
 		}
 	}
 </script>
 
 <style>
+	.collapse-item {
+		font-size: 20rpx;
+		margin-left: 50rpx;
+		color: #999999;
+	}
+
+	.image-add {
+		width: 80rpx;
+		height: 80rpx;
+	}
+
+	.submit-button {
+		background-color: #4CD964;
+		color: #FFFFFF;
+	}
 </style>

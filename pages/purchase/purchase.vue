@@ -101,7 +101,7 @@
 				params.purchaseWay = this.selectedCgWayId
 				params.djhDesc = form.site + "-" + form.material + "-" + form.cgWay + "-" + form.cgDate //测试
 				params.cgDate = form.cgDate
-				this.$http.get('/purchase/hteKcMaterialPurchase/getCgNo?id=' + 1).then(res => {
+				this.$http.get('/purchase/hteKcMaterialPurchase/getCgNo?id=' + this.selectedSiteId).then(res => {
 					params.djh = res.data.message
 					that.$http.post("/purchase/hteKcMaterialPurchase/add", params).then(res => {
 						console.log(res)

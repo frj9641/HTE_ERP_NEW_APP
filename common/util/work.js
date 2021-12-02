@@ -109,7 +109,7 @@ export const us = {
 	  icon:icon_prefix+"hetong.png",
 	  description:"质量数据采集",
 	  useCount:10000,
-	  page:'purchase'
+	  page:'dataCollect'
     }
   ]
 }
