@@ -14,7 +14,7 @@
 					:style="{'background-color':item.checkFlag==0?'#99FFFF':item.checkFlag==1?'#FFA500':'#fff'}">
 					<uni-collapse-item :showArrow="false"
 						:title="item.siteId_dictText+'-'+item.collectDate+'-'+item.collectTime">
-						<view class="collapse-item" @click.stop="edit(item.detail)">
+						<view class="collapse-item" @click.stop="edit(item)">
 							<view>厂站：{{item.siteId_dictText}}</view>
 							<view>采样时间：{{item.collectTime}}</view>
 							<view>采样日期：{{item.collectDate}}</view>
@@ -44,7 +44,7 @@
 					<view class="content">
 						<form @submit="onSubmit">
 							<comp-input @bindSiteChange="bindSiteChange" />
-							<button form-type="submit" class="submit-button">提交</button>
+							<button form-type="submit" class="submit-button-complete">提交</button>
 						</form>
 					</view>
 				</scroll-view>
@@ -56,10 +56,11 @@
 				<scroll-view style="height: 100%;" scroll-y="true">
 					<view class="content">
 						<form @submit="onDetailSubmit">
-							<detailInput @bindSiteChange="bindSiteChange" ref="detailForm"/>
-							<button form-type="submit" class="submit-button-complete-next">完成并新建</button>
-							<button form-type="submit" class="submit-button-complete">完成</button>
+							<detailInput @bindTestIndexChange="bindTestIndexChange" @bindPortChange="bindPortChange"
+								ref="detailForm" />
+							<button form-type="submit" class="submit-button-complete">完成并新建</button>
 						</form>
+						<button @click="closeDrawer()" class="submit-button-complete-next">退出</button>
 					</view>
 				</scroll-view>
 			</uni-drawer>
@@ -90,16 +91,22 @@
 			return {
 				modalName: null,
 				list: [],
-				selectedSiteId: ''
-
+				selectedSiteId: '',
+				selectedPortId: '',
+				selectedTestIndexId: '',
+				selectedMain: {}
 			}
 		},
 		methods: {
+			closeDrawer() {
+				this.$refs.showDetail.close();
+			},
 			edit(e) {
 				this.$refs.showDetail.open();
-				this.$nextTick(function(){
-					this.$refs.detailForm.init(e);
+				this.$nextTick(function() {
+					this.$refs.detailForm.init(e.detail);
 				})
+				this.selectedMain = e
 			},
 			// 后台接口不发生更改的最简易写法，但是前台代码发生了循环调用接口，并且重复强制刷新，如果实际使用此处务必修改
 			loadData() {
@@ -122,7 +129,32 @@
 					})
 			},
 			onDetailSubmit(e) {
-				alert('haha')
+				let form = e.detail.value
+				let keys = Object.keys(form)
+				let detail = ''
+				keys.forEach((key) => {
+					detail = detail + key + ':' + form[key] + ';'
+				})
+				let params = {}
+				params.parentId = this.selectedMain.id
+				params.collectPointId = this.selectedPortId
+				params.testIndexId = this.selectedTestIndexId
+				params.detailValue = detail
+				this.$http.post("/dataCollect/htePortDataCollect/addDetail", params).then(res => {
+					this.$http.get('/dataCollect/htePortDataCollect/queryHtePortDataCollectDetailByMainId?id=' +
+							this.selectedMain.id)
+						.then(res => {
+							this.$nextTick(function() {
+								this.$refs.detailForm.init(res.data.result)
+							})
+						})
+				})
+				// 刷新外面，上方单独请求了一次抽屉表单的内容，属于重复请求
+				this.loadData()
+				uni.showToast({
+					title: '已完成项更新',
+					duration: 2000
+				})
 			},
 			onSubmit(e) {
 				let form = e.detail.value
@@ -136,7 +168,7 @@
 					console.log(res)
 				})
 				this.$refs.showRight.close();
-				this.loadData()
+				this.loadData(this.selectedMain)
 			},
 			showDrawer() {
 				this.$refs.showRight.open();
@@ -144,17 +176,14 @@
 			add() {
 				this.showDrawer()
 			},
-			bindMaterialChange(e) {
-				this.selectedMaterialId = e
-			},
-			bindSupplyChange(e) {
-				this.selectedSupplyId = e
-			},
-			bindCgWayChange(e) {
-				this.selectedCgWayId = e
-			},
 			bindSiteChange(e) {
 				this.selectedSiteId = e
+			},
+			bindPortChange(e) {
+				this.selectedPortId = e
+			},
+			bindTestIndexChange(e) {
+				this.selectedTestIndexId = e
 			},
 			updateCheck(e, c) {
 				var that = this
@@ -163,7 +192,7 @@
 				params.checkFlag = c == 0 ? 1 : 2
 				params.checkDate = this.dateFormat(new Date())
 				// 审核成功会删除附表记录
-				this.$http.put('/dataCollect/htePortDataCollect/edit', params)
+				this.$http.put('/dataCollect/htePortDataCollect/check', params)
 					.then(res => {
 						console.log(res)
 						that.loadData()
@@ -200,13 +229,14 @@
 	}
 
 	.submit-button-complete {
+		margin-top: 100rpx;
 		background-color: #4CD964;
 		color: #FFFFFF;
 	}
 
 	.submit-button-complete-next {
-		margin-bottom: 5rpx;
-		background-color: #A5673F;
+		margin-top: 5rpx;
+		background-color: #E43D33;
 		color: #FFFFFF;
 	}
 </style>

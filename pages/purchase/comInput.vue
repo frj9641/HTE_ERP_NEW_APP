@@ -3,17 +3,17 @@
 		<text class="flex flex-direction form-title">新增表单</text>
 		<view class="input-title">厂站</view>
 		<picker mode="selector" @change="bindSiteChange" :range="sites" :range-key="'siteName'">
-			<input class="input-content" name="site" v-model="selectedSite" />
+			<input class="input-content" v-model="selectedSite" />
 		</picker>
 
 		<view class="input-title">物料</view>
 		<picker mode="selector" @change="bindMaterialChange" :range="materials" :range-key="'material'">
-			<input class="input-content" name="material" v-model="selectedMaterial" />
+			<input class="input-content" v-model="selectedMaterial" />
 		</picker>
 
 		<view class="input-title">供应商</view>
 		<picker mode="selector" @change="bindSupplyChange" :range="supplys" :range-key="'supplyName'">
-			<input class="input-content" name="supply" v-model="selectedSupply" />
+			<input class="input-content" v-model="selectedSupply" />
 		</picker>
 
 		<view class="input-title">数量(吨)</view>

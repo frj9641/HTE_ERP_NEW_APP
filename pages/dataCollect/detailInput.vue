@@ -1,14 +1,37 @@
 <template>
 	<view>
 		<text class="flex flex-direction form-title">新增表单</text>
+
+		<view>
+			<view class="input-title">已完成项</view>
+			<view v-for="item in detail">
+				<input class="input-content" disabled="true"
+					:value="item.collectPointName+' - '+item.testIndexName+' - '+item.testValue" />
+			</view>
+		</view>
+
 		<view class="input-title">采样口</view>
 		<picker mode="selector" @change="bindPortChange" :range="ports" :range-key="'collectPoint'">
-			<input class="input-content" name="port" v-model="selectedPort" />
+			<input class="input-content" v-model="selectedPort" />
 		</picker>
 		<view class="input-title">指标</view>
 		<picker mode="selector" @change="bindTestIndexChange" :range="testIndex" :range-key="'testIndex'">
-			<input class="input-content" name="testIndex" v-model="selectedTestIndex" />
+			<input class="input-content" v-model="selectedTestIndex" />
 		</picker>
+
+		<view v-if="isShow">
+			<view class="input-title">{{selectedTestIndex}}表达式</view>
+			<input class="input-content" disabled="true" :value="polandExp" />
+			<view v-for="item in optional">
+				<view class="input-title">{{item}}</view>
+				<input class="input-content" :name="item" type="digit" />
+			</view>
+		</view>
+
+		<view v-if="!isShow">
+			<view class="input-title">计算值</view>
+			<input class="input-content" name="a" type="digit" />
+		</view>
 
 	</view>
 </template>
@@ -27,13 +50,14 @@
 				selectedPort: "",
 				selectedTestIndex: "",
 				detail: [],
-				testIndexOptional: {}
+				optional: [],
+				polandExp: '',
+				isShow: false
 			}
 		},
 		methods: {
 			init(e) {
 				this.detail = e
-				console.log(this.detail)
 			},
 			loadData() {
 
@@ -60,8 +84,14 @@
 				this.$emit('bindTestIndexChange', obj.id)
 				this.$http.get('/algorithm/htePortDataCollectAlgorithm/queryByTestIndexId?testIndexId=' + obj.id).then(
 					res => {
-						this.testIndexOptional = res.data.result
-						console.log(this.testIndexOptional)
+						let result = res.data.result
+						if (result != null && result.id != null) {
+							this.isShow = true
+							this.optional = result.optional
+							this.polandExp = result.polandExp
+						} else {
+							this.isShow = false
+						}
 					})
 			}
 		}
