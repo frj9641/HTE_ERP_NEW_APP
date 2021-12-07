@@ -166,9 +166,9 @@
 				params.checkFlag = 0 //编辑中
 				this.$http.post("/dataCollect/htePortDataCollect/add", params).then(res => {
 					console.log(res)
+					this.$refs.showRight.close();
+					this.loadData(this.selectedMain)
 				})
-				this.$refs.showRight.close();
-				this.loadData(this.selectedMain)
 			},
 			showDrawer() {
 				this.$refs.showRight.open();
