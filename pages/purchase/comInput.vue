@@ -3,21 +3,21 @@
 		<text class="flex flex-direction form-title">新增表单</text>
 		<view class="input-title">厂站</view>
 		<picker mode="selector" @change="bindSiteChange" :range="sites" :range-key="'siteName'">
-			<input class="input-content" v-model="selectedSite" />
+			<input class="input-content" name="site" v-model="selectedSite" disabled="true" />
 		</picker>
 
 		<view class="input-title">物料</view>
 		<picker mode="selector" @change="bindMaterialChange" :range="materials" :range-key="'material'">
-			<input class="input-content" v-model="selectedMaterial" />
+			<input class="input-content" name="material" v-model="selectedMaterial" disabled="true" />
 		</picker>
 
 		<view class="input-title">供应商</view>
 		<picker mode="selector" @change="bindSupplyChange" :range="supplys" :range-key="'supplyName'">
-			<input class="input-content" v-model="selectedSupply" />
+			<input class="input-content" v-model="selectedSupply" disabled="true" />
 		</picker>
 
 		<view class="input-title">数量(吨)</view>
-		<input class="input-content" name="slT" type="digit" />
+		<input class="input-content" name="slT" type="digit"/>
 
 		<view class="input-title">采购单价(元/吨)</view>
 		<input class="input-content" name="dj" type="digit" />
@@ -30,12 +30,12 @@
 
 		<view class="input-title">采购方式</view>
 		<picker mode="selector" @change="bindCgWayChange" :range="cgWays" :range-key="'title'">
-			<input class="input-content" name="cgWay" v-model="selectedCgWay" />
+			<input class="input-content" name="cgWay" v-model="selectedCgWay" disabled="true" />
 		</picker>
 
 		<view class="input-title">采购日期</view>
 		<picker mode="date" @change="bindCgDateChange">
-			<input class="input-content" name="cgDate" v-model="selectedCgDate" />
+			<input class="input-content" name="cgDate" v-model="selectedCgDate" disabled="true" />
 		</picker>
 	</view>
 </template>

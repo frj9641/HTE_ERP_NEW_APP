@@ -3,17 +3,17 @@
 		<text class="flex flex-direction form-title">新增表单</text>
 		<view class="input-title">厂站</view>
 		<picker mode="selector" @change="bindSiteChange" :range="sites" :range-key="'siteName'">
-			<input class="input-content" name="site" v-model="selectedSite" />
+			<input class="input-content" name="site" v-model="selectedSite" disabled="true" />
 		</picker>
 
 		<view class="input-title">采集日期</view>
 		<picker mode="date" @change="bindCgDateChange">
-			<input class="input-content" name="cgDate" v-model="selectedCgDate" />
+			<input class="input-content" name="cgDate" v-model="selectedCgDate" disabled="true" />
 		</picker>
 
 		<view class="input-title">采集时间</view>
 		<picker mode="time" @change="bindCgTimeChange">
-			<input class="input-content" name="cgTime" v-model="selectedCgTime" />
+			<input class="input-content" name="cgTime" v-model="selectedCgTime" disabled="true" />
 		</picker>
 	</view>
 </template>

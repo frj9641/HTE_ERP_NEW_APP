@@ -4,10 +4,12 @@
 			:class="modalName!=null?'show':''">
 			<cu-custom id="nav-bar" bgColor="bg-gradual-green" :isBack="true">
 				<block slot="content">质量数据采集</block>
-				<block slot="right">
+				<!-- <block slot="right">
 					<image class="image-add" src="./add.svg" @tap="add()"></image>
-				</block>
+				</block> -->
 			</cu-custom>
+
+			<image class="image-add" src="/static/svg/add.svg" @tap="add()"></image>
 
 			<view v-for="(item,index) in list" style="margin: 15rpx;">
 				<uni-collapse
@@ -20,7 +22,7 @@
 							<view>采样日期：{{item.collectDate}}</view>
 							<view>审核状态：{{item.checkFlag_dictText}}</view>
 							<view>审核日期：{{item.checkDate}}</view>
-							<view>======已完成项======</view>
+							<view style="font-size: large;">======已完成项======</view>
 							<view v-for="(d) in item.detail">
 								<view>{{d.collectPointName}}-{{d.testIndexName}}-{{d.testValue}}</view>
 							</view>
@@ -224,8 +226,15 @@
 	}
 
 	.image-add {
-		width: 80rpx;
-		height: 80rpx;
+		/* width: 80rpx;
+		height: 80rpx; */
+
+		width: 120rpx;
+		height: 120rpx;
+		margin: 10rpx;
+		position: fixed;
+		right: 0;
+		bottom: 0;
 	}
 
 	.submit-button-complete {

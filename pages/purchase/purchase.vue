@@ -4,10 +4,12 @@
 			:class="modalName!=null?'show':''">
 			<cu-custom id="nav-bar" bgColor="bg-gradual-green" :isBack="true">
 				<block slot="content">采购业务</block>
-				<block slot="right">
+				<!-- <block slot="right">
 					<image class="image-add" src="./add.svg" @tap="add()"></image>
-				</block>
+				</block> -->
 			</cu-custom>
+
+			<image class="image-add" src="/static/svg/add.svg" @tap="add()"></image>
 
 			<view v-for="(item,index) in list" style="margin: 15rpx;">
 				<uni-collapse :style="{'background-color':item.checkFlag==1?'#FFA500':'#fff'}">
@@ -105,10 +107,10 @@
 					params.djh = res.data.message
 					that.$http.post("/purchase/hteKcMaterialPurchase/add", params).then(res => {
 						console.log(res)
+						this.$refs.showRight.close();
+						this.loadData()
 					})
 				})
-				this.$refs.showRight.close();
-				this.loadData()
 			},
 			showDrawer() {
 				this.$refs.showRight.open();
@@ -171,8 +173,15 @@
 	}
 
 	.image-add {
-		width: 80rpx;
-		height: 80rpx;
+		/* 	width: 80rpx;
+		height: 80rpx; */
+
+		width: 120rpx;
+		height: 120rpx;
+		margin: 10rpx;
+		position: fixed;
+		right: 0;
+		bottom: 0;
 	}
 
 	.submit-button {

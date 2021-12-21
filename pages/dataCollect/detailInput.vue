@@ -12,11 +12,11 @@
 
 		<view class="input-title">采样口</view>
 		<picker mode="selector" @change="bindPortChange" :range="ports" :range-key="'collectPoint'">
-			<input class="input-content" v-model="selectedPort" />
+			<input class="input-content" v-model="selectedPort" disabled="true" />
 		</picker>
 		<view class="input-title">指标</view>
 		<picker mode="selector" @change="bindTestIndexChange" :range="testIndex" :range-key="'testIndex'">
-			<input class="input-content" v-model="selectedTestIndex" />
+			<input class="input-content" v-model="selectedTestIndex" disabled="true" />
 		</picker>
 
 		<view v-if="isShow">
